@@ -28,9 +28,9 @@ class BooksLoan extends Database
         return $data;
     }
 
-    public function detailBooks($id)
+    public function detailBook($id)
     {
-        $data = $this->runSelectQuery("SELECT * FROM blog WHERE id = $id");
+        $data = $this->runSelectQuery("SELECT * FROM buku WHERE id = $id");
         if (count($data) === 0) {
             return null;
         } else {
@@ -38,16 +38,59 @@ class BooksLoan extends Database
         }
     }
 
-    public function createBook() {
-        $judul_buku = $_POST['judul_buku'];
-        $penulis_buku = $_POST['penulis_buku'];
-        $sinopsis = $_POST['sinopsis'];
-        $gambar = $_POST['gambar'];
+    public function createBook($data)
+    {
+        $judul_buku = $data['judul_buku'];
+        $penulis_buku = $data['penulis_buku'];
+        $sinopsis = $data['sinopsis'];
+        $gambar = $data['gambar'];
 
-        $query = "INSERT INTO buku (judul_buku, penulis_buku, sinopsis, gambar VALUES '$judul_buku', '$penulis_buku', '$sinopsis', '$gambar')";
+        $query = "INSERT INTO buku (judul_buku, penulis_buku, sinopsis, gambar) VALUES ('$judul_buku', '$penulis_buku', '$sinopsis', '$gambar')";
 
         $insert = $this->runQuery($query);
-        return $insert;
 
+        if (!$insert) {
+            return $this->getErrors();
+        }
+        return $insert;
     }
+
+    public function updateBook($data)
+    {
+        $id = $data['id'];
+        $judul_buku = $data['judul_buku'];
+        $penulis_buku = $data['penulis_buku'];
+        $sinopsis = $data['sinopsis'];
+        $gambar = $data['gambar'];
+
+        $query = "UPDATE buku SET judul_buku = '$judul_buku', penulis_buku = '$penulis_buku', sinopsis = '$sinopsis', gambar='$gambar' WHERE id = $id";
+
+        $update = $this->runQuery($query);
+        if (!$update) {
+            return $this->getErrors();
+        }
+        return $update;
+    }
+}
+$book = new BooksLoan();
+if (isset($_POST['inserting'])) {
+    $book->createBook([
+        'judul_buku' => $_POST['judul_buku'],
+        'penulis_buku' => $_POST['penulis_buku'],
+        'sinopsis' => $_POST['sinopsis'],
+        'gambar' => $_POST['gambar']
+    ]);
+    exit;
+
+}
+
+if (isset($_POST['id']) && (isset($_POST['updating']))){
+    $book->updateBook([
+        'id' => $_POST['id'],
+        'judul_buku' => $_POST['judul_buku'],
+        'penulis_buku' => $_POST['penulis_buku'],
+        'sinopsis' => $_POST['sinopsis'],
+        'gambar' => $_POST['gambar']
+
+    ]);
 }

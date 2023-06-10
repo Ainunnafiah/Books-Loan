@@ -2,7 +2,7 @@
 
 class Database {
     private function connect(){
-        $koneksi = mysqli_connect('localhost', 'root', '', 'blog');
+        $koneksi = mysqli_connect('localhost', 'root', '', 'books_loan');
         return $koneksi;
     }
     public function runQuery($query){
