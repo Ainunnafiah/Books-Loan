@@ -38,12 +38,37 @@ class BooksLoan extends Database
         }
     }
 
-    public function createBook($data)
+    private function uploadImage($file)
+    {
+        // check extension file should be an image
+        $extension = pathinfo($file['name'], PATHINFO_EXTENSION);
+        $allowed = ['jpg', 'png', 'jpeg'];
+        if (!in_array($extension, $allowed)) {
+            return 'default.png';
+        }
+
+        //check file size 
+        // if ($file['size'] > 1000000) {
+        //     return 'default.png';
+        // }
+        // generate file name
+        $filename = rand();
+
+        // move file to folder
+        move_uploaded_file($file['tmp_name'], '../images/' . $filename . '.' . $extension);
+        return  $filename . '.' . $extension;
+    }
+
+    public function createBook($data, $file)
     {
         $judul_buku = $data['judul_buku'];
         $penulis_buku = $data['penulis_buku'];
         $sinopsis = $data['sinopsis'];
-        $gambar = $data['gambar'];
+        $gambar = 'default.png';
+
+        if (isset($file['gambar']) && $file['gambar']['error'] === 0) {
+            $gambar = $this->uploadImage($file['gambar']);
+        }
 
         $query = "INSERT INTO buku (judul_buku, penulis_buku, sinopsis, gambar) VALUES ('$judul_buku', '$penulis_buku', '$sinopsis', '$gambar')";
 
@@ -55,13 +80,21 @@ class BooksLoan extends Database
         return $insert;
     }
 
-    public function updateBook($data)
+    public function updateBook($data, $file)
     {
         $id = $data['id'];
+        $before = $this->detailBook($id);
         $judul_buku = $data['judul_buku'];
         $penulis_buku = $data['penulis_buku'];
         $sinopsis = $data['sinopsis'];
-        $gambar = $data['gambar'];
+        $gambar = $before['gambar'];
+
+        if (isset($file['gambar']) && $file['gambar']['error'] === 0) {
+            if ($gambar !== 'default.png') {
+                unlink('../images/' . $gambar);
+            }
+            $gambar = $this->uploadImage($file['gambar']);
+        }
 
         $query = "UPDATE buku SET judul_buku = '$judul_buku', penulis_buku = '$penulis_buku', sinopsis = '$sinopsis', gambar='$gambar' WHERE id = $id";
 
@@ -78,19 +111,16 @@ if (isset($_POST['inserting'])) {
         'judul_buku' => $_POST['judul_buku'],
         'penulis_buku' => $_POST['penulis_buku'],
         'sinopsis' => $_POST['sinopsis'],
-        'gambar' => $_POST['gambar']
-    ]);
+    ], $_FILES);
     exit;
-
 }
 
-if (isset($_POST['id']) && (isset($_POST['updating']))){
+if (isset($_POST['id']) && (isset($_POST['updating']))) {
     $book->updateBook([
         'id' => $_POST['id'],
         'judul_buku' => $_POST['judul_buku'],
         'penulis_buku' => $_POST['penulis_buku'],
         'sinopsis' => $_POST['sinopsis'],
-        'gambar' => $_POST['gambar']
-
-    ]);
+    ], $_FILES);
+    exit;
 }

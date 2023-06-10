@@ -38,7 +38,7 @@ if (isset($_GET['id'])) {
 
 <body>
     <div class='container'>
-        <form class='mt-5' action='../controllers/BooksLoan.php' method='post'>
+        <form class='mt-5' action='../controllers/BooksLoan.php' method='post' enctype="multipart/form-data">
             <h1 class='mb-3'>Form Add Book</h1>
 
             <?php if (isset($_GET['id'])) : ?>
@@ -71,17 +71,17 @@ if (isset($_GET['id'])) {
                 </div>
             </div>
 
-            <div class="mb-1 row">
+            <!-- <div class="mb-1 row">
                 <label for="gambar" class="col-sm-2 col-form-label"> Cover </label>
                 <div class='col-sm-12'>
                     <input type='text' class='form-control' name='gambar' value='<?php echo $data['gambar'] ?>' placeholder="Masukkan judul buku"></input>
                 </div>
-            </div>
-
-            <!-- <div class="mb-1 row">
-                <label for="gambar"> Cover </label>
-                <input id="gambar" type="file" />
             </div> -->
+
+            <div class="mb-1 row">
+                <label for="gambar"> Cover </label>
+                <input id="gambar" name="gambar" type="file" />
+            </div>
 
             <div class="mb-1">
                 <button type="submit" class="btn btn-primary"> Submit </button>
