@@ -1,3 +1,11 @@
+<?php
+
+include_once "../controllers/BooksLoan.php";
+
+$book = new BooksLoan();
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -13,40 +21,20 @@
 <body>
   <div class="container">
     <div class="row">
-      <div class="col-4">
-
-        <div class="card" style="width: 18rem;">
-          <img src="../images/dear-tomorrow.png" class="card-img-top" alt="...">
-          <div class="card-body">
-            <h5 class="card-title">Dear Tomorrow</h5>
-            <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas tristique tortor in interdum pretium. Suspendisse ultrices gravida bibendum.</p>
-            <a href="#" class="btn btn-primary">Detail Book</a>
+      <?php foreach ($book->getBooks() as $key) : ?>
+        <div class="col-4 mb-1">
+          <div class="card">
+            <img src="../images/<?= $key['gambar']; ?>" class="card-img-top" style="width: 100%; aspect-ratio: 1 / 1; object-fit: cover;" alt="...">
+            <div class="card-body">
+              <h5 class="card-title"><?= $key['judul_buku']; ?></h5>
+              <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas tristique tortor in interdum pretium. Suspendisse ultrices gravida bibendum.</p>
+              <a href="detail-buku.php?id=<?= $key['id']; ?>" class="btn btn-primary">Detail Book</a>
+            </div>
           </div>
         </div>
-      </div>
-
-      <div class="col-4">
-        <div class="card" style="width: 18rem;">
-          <img src="../images/alices-adventures-in-wonderland-20221117183954.png" class="card-img-top" alt="...">
-          <div class="card-body">
-            <h5 class="card-title">Alices Adventures In Wonderland</h5>
-            <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas tristique tortor in interdum pretium. Suspendisse ultrices gravida bibendum.</p>
-            <a href="#" class="btn btn-primary">Detail Book</a>
-          </div>
-        </div>
-      </div>
-
-      <div class="col-4">
-        <div class="card" style="width: 18rem;">
-          <img src="../images/dear-nathan-20221117184246.png" class="card-img-top" alt="...">
-          <div class="card-body">
-            <h5 class="card-title">Dear Nathan</h5>
-            <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas tristique tortor in interdum pretium. Suspendisse ultrices gravida bibendum.</p>
-            <a href="#" class="btn btn-primary">Detail Book</a>
-          </div>
-        </div>
-      </div>
+      <?php endforeach; ?>
     </div>
+  </div>
 
   </div>
 

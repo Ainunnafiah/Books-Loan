@@ -5,25 +5,7 @@ class BooksLoan extends Database
 {
     public function getBooks()
     {
-        $query = "SELECT 
-        buku.id,
-        buku.judul_buku,
-        buku.penulis_buku,
-        buku.sinopsis,
-        buku.gambar,
-        pinjaman.id,
-        pinjaman.nama,
-        pinjaman.id_buku,
-        pinjaman.tanggal_pinjam,
-        member.id
-        member.nama,
-        member.alamat,
-        member.tanggal_lahir,
-        member.no_hp,
-        member.email,
-        FROM books_loan
-        ";
-
+        $query = "SELECT  * FROM buku";
         $data = $this->runSelectQuery($query);
         return $data;
     }
