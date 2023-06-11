@@ -57,7 +57,8 @@ class BooksLoan extends Database
         $insert = $this->runQuery($query);
 
         if (!$insert) {
-            return $this->getErrors();
+            $this->getErrors();
+            return null;
         }
         return $insert;
     }
@@ -82,27 +83,130 @@ class BooksLoan extends Database
 
         $update = $this->runQuery($query);
         if (!$update) {
-            return $this->getErrors();
+            $this->getErrors();
+            return null;
         }
         return $update;
     }
+
+    public function deleteBook($id)
+    {
+        $detail = $this->detailBook($id);
+        if ($detail === null) {
+            echo "<div>
+            <script>
+            alert('ID Buku tidak ditemukan');
+            window.location.href = '../views/daftar-buku.php';
+            </script>
+            </div>";
+            return;
+        }
+
+        // hapus gambarnya dulu supaya tidak jadi ainun
+        if ($detail['gambar'] !== 'default.png') {
+            unlink('../images/' . $detail['gambar']);
+        }
+
+        $this->runQuery("DELETE FROM pinjaman WHERE id_buku = $id");
+        $isSucces = $this->runQuery("DELETE FROM buku WHERE id = '$id'");
+
+        if ($isSucces) {
+            echo "<div>
+        <script>
+        alert('Berhasil Menghapus Data');
+        window.location.href = '../views/daftar-buku.php';
+        </script>
+        </div>";
+        } else {
+            $this->getErrors();
+        }
+    }
+
+    public function detailBookPinjam($id)
+    {
+        $data = $this->runSelectQuery("SELECT * FROM pinjaman WHERE id_buku = $id");
+        return $data;
+    }
+
+    public function pinjamBuku($data)
+    {
+        $id_buku = $data['id_buku'];
+        $nama = $data['nama'];
+        $tanggal_pinjam = $data['tanggal_pinjam'];
+
+        $result = $this->runQuery("INSERT INTO 
+            pinjaman(nama, tanggal_pinjam, id_buku) 
+        VALUES
+            ('$nama', '$tanggal_pinjam', '$id_buku')
+        ");
+
+        if ($result) {
+            echo "
+                <script>
+                    alert('Berhasil meminjam buku');
+                    window.location.href = '../views/detail-buku.php?id=$id_buku';
+                </script>
+            ";
+        } else {
+            echo $this->getErrors();
+        }
+    }
 }
+
+// buat instance BooksLoan untuk digunakan di bawah
 $book = new BooksLoan();
+
 if (isset($_POST['inserting'])) {
-    $book->createBook([
+    $books = $book->createBook([
         'judul_buku' => $_POST['judul_buku'],
         'penulis_buku' => $_POST['penulis_buku'],
         'sinopsis' => $_POST['sinopsis'],
     ], $_FILES);
+
+    if ($books) {
+        echo "<div>
+        <script>
+        alert('berhasil menambahkan buku')
+        window.location.href = '../views/daftar-buku.php'
+        </script>
+        </div>";
+    } else {
+        $this->getErrors();
+    }
     exit;
 }
 
 if (isset($_POST['id']) && (isset($_POST['updating']))) {
-    $book->updateBook([
+    $books = $book->updateBook([
         'id' => $_POST['id'],
         'judul_buku' => $_POST['judul_buku'],
         'penulis_buku' => $_POST['penulis_buku'],
         'sinopsis' => $_POST['sinopsis'],
     ], $_FILES);
+
+    if ($books) {
+        echo "<div>
+        <script>
+        alert('berhasil mengedit buku')
+        window.location.href = '../views/daftar-buku.php'
+        </script>
+        </div>";
+    } else {
+        $this->getErrors();
+    }
+    exit;
+}
+
+if (isset($_GET['id']) && isset($_GET['deleting'])) {
+    $books = $book->deleteBook($_GET['id']);
+    exit;
+}
+
+if (isset($_POST['lagi_minjem']) && isset($_POST['id_buku'])) {
+    $book->pinjamBuku([
+        'id_buku' => $_POST['id_buku'],
+        'nama' => $_POST['nama'],
+        'tanggal_pinjam' => $_POST['tanggal_pinjam'],
+    ]);
     exit;
 }
