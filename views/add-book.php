@@ -24,7 +24,7 @@ if (isset($_GET['id'])) {
     }
 }
 
-
+//instance utk judul header
 $title = "Tambah Buku";
 
 ?>

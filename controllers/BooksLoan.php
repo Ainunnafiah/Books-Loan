@@ -3,7 +3,6 @@ include_once '../models/Database.php';
 
 class BooksLoan extends Database
 {
-    public $nama = '';
     public function getBooks()
     {
         $query = "SELECT  * FROM buku";
