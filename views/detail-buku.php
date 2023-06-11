@@ -31,6 +31,7 @@ $dataPeminjam = $buku->detailBookPinjam($_GET['id']);
 
 <body>
     <div class="container">
+        <a href='daftar-buku.php'> Back </a href>
         <div class="row">
             <div class="col-6">
                 <img src="../images/<?= $detail['gambar']; ?>" class="card-img-top" style="width: 100%; aspect-ratio: 1 / 1; object-fit: cover;" alt="...">
