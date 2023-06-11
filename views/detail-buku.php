@@ -4,6 +4,9 @@ include_once '../controllers/BooksLoan.php';
 
 $buku = new BooksLoan();
 $detail = $buku->detailBook($_GET['id']);
+$secret = $_POST['rahasia'] ?? '';
+
+$is_admin = $secret === 'iincans';
 
 if ($detail === null) {
     echo "<script>
@@ -36,7 +39,15 @@ $dataPeminjam = $buku->detailBookPinjam($_GET['id']);
             <div class="col-6 mt-5">
                 <h3><?php echo $detail['judul_buku'] ?></h3>
                 <h6><?php echo $detail['sinopsis'] ?></h6>
-                <a onclick="return confirm('Yakin hapus nehh?')" class="btn btn-sm btn-danger" href="../controllers/BooksLoan.php?id=<?= $_GET['id']; ?>&deleting=true">Hapus Buku</a>
+                <?php if ($is_admin) : ?>
+                    <a onclick="return confirm('Yakin hapus nehh?')" class="btn btn-sm btn-danger" href="../controllers/BooksLoan.php?id=<?= $_GET['id']; ?>&deleting=true">Hapus Buku</a>
+                <?php else : ?>
+                    <form action="" method="post">
+                        <div class="mb-3">
+                            <input type="password" class="form-control" name="rahasia" placeholder="Masukkan password dan enter untuk menghapus buku">
+                        </div>
+                    </form>
+                <?php endif; ?>
 
                 <form action="../controllers/BooksLoan.php" class="mt-4" method="post">
                     <h4>Pinjam Buku</h4>
