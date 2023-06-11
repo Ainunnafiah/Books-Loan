@@ -3,6 +3,7 @@ include_once '../models/Database.php';
 
 class BooksLoan extends Database
 {
+    public $nama = '';
     public function getBooks()
     {
         $query = "SELECT  * FROM buku";
@@ -148,7 +149,7 @@ class BooksLoan extends Database
                 </script>
             ";
         } else {
-            echo $this->getErrors();
+            $this->getErrors();
         }
     }
 }
@@ -171,12 +172,12 @@ if (isset($_POST['inserting'])) {
         </script>
         </div>";
     } else {
-        $this->getErrors();
+        $book->getErrors();
     }
     exit;
 }
 
-if (isset($_POST['id']) && (isset($_POST['updating']))) {
+if (isset($_POST['id']) && isset($_POST['updating'])) {
     $books = $book->updateBook([
         'id' => $_POST['id'],
         'judul_buku' => $_POST['judul_buku'],
